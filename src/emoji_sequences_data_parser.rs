@@ -1,6 +1,6 @@
 //! Unicode提供の
 //! - [ZWJを使用しないで結合する絵文字の組み合わせの一覧](https://www.unicode.org/Public/emoji/latest/emoji-sequences.txt)
-//! - [ZWJ結合する絵文字の組み合わせの一覧](https://www.unicode.org/Public/emoji/14.0/emoji-zwj-sequences.txt)
+//! - [ZWJ結合する絵文字の組み合わせの一覧](https://www.unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt)
 //! を解析してcrate::tree::V構造を生成する。
 
 use crate::tree;
