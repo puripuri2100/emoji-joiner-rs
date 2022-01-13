@@ -1,0 +1,6 @@
+/target
+Cargo.lock
+*.pdf
+_src
+src/main.rs
+
