@@ -25,51 +25,55 @@ where
   }
 
   pub fn insert(&mut self, lst: &[T]) {
-    match self {
-      V::End => {
-        *self = self.insert_sub(lst, 0)[0].clone();
-      }
-      V::Node(t, _) => {
-        if Some(&t.clone()) == lst.get(0) {
-          *self = self.insert_sub(lst, 0)[0].clone();
-        } else {
-          panic!()
-        }
-      }
+    match self.insert_sub(lst, 0) {
+      None => *self = V::lst_to_v(&lst),
+      Some((v, _)) => *self = v,
     }
   }
-  pub fn insert_sub(&mut self, lst: &[T], index: usize) -> Vec<Self> {
+  pub fn insert_sub(&self, lst: &[T], index: usize) -> Option<(Self, bool)> {
     match self {
-      V::End => {
-        if lst.len() > index {
-          vec![V::lst_to_v(
-            &lst.iter().skip(index).cloned().collect::<Vec<_>>(),
-          )]
-        } else {
-          vec![V::End]
-        }
-      }
+      V::End => Some((
+        V::lst_to_v(&lst.iter().skip(index).cloned().collect::<Vec<_>>()),
+        false,
+      )),
       V::Node(t, children) => {
         if let Some(new_t) = lst.get(index) {
           // 追加するリストの先があるので、さらに奥に進む
           if t == new_t {
-            // タグが同じなので、再帰関数をchildren全体にかける
-            let new_children = children
-              .iter()
-              .map(|v| v.clone().insert_sub(lst, index + 1))
-              .collect::<Vec<Vec<_>>>()
-              .concat();
-            vec![V::Node(t.clone(), new_children)]
+            let mut new_children = Vec::new();
+            let mut is_insert = false;
+            for v in children.iter() {
+              match v.insert_sub(lst, index + 1) {
+                None => {
+                  // 更新なし
+                  new_children.push(v.clone());
+                }
+                Some((v2, false)) => {
+                  // 更新なし
+                  // データを追加する
+                  new_children.push(v.clone());
+                  if !is_insert {
+                    new_children.push(v2);
+                    is_insert = true;
+                  }
+                }
+                Some((v2, true)) => {
+                  // 更新あり
+                  new_children.push(v2);
+                }
+              }
+            }
+            Some((V::Node(t.clone(), new_children), true))
           } else {
-            // タグが別になるので、ここで枝を生成してchildrenに追加する
-            vec![
-              V::Node(t.clone(), children.clone()),
+            // タグが別になるので、ここで枝を生成してchildrenに追加する^
+            Some((
               V::lst_to_v(&lst.iter().skip(index).cloned().collect::<Vec<_>>()),
-            ]
+              false,
+            ))
           }
         } else {
           // 追加するリストのほうが短かった場合は、Endを追加する
-          vec![V::Node(t.clone(), children.clone()), V::End]
+          Some((V::End, false))
         }
       }
     }
