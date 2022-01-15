@@ -10,6 +10,15 @@ pub enum V<T> {
   End,
 }
 
+impl<T> Default for V<T>
+where
+  T: Clone + Eq + PartialEq + core::hash::Hash + PartialOrd + Ord + core::fmt::Debug,
+{
+  fn default() -> Self {
+    Self::new()
+  }
+}
+
 impl<T> V<T>
 where
   T: Clone + Eq + PartialEq + core::hash::Hash + PartialOrd + Ord + core::fmt::Debug,
@@ -28,7 +37,7 @@ where
 
   pub fn insert(&self, lst: &[T]) -> Self {
     match self.insert_sub(lst, 0) {
-      None => V::lst_to_v(&lst),
+      None => V::lst_to_v(lst),
       Some((v, _)) => v,
     }
   }
@@ -87,10 +96,7 @@ where
   /// 貪欲マッチする。つまり、複数のマッチする要素があったばあい、一番長いものを消費する
   pub fn search(&self, lst: &[T]) -> Option<(Vec<T>, Vec<T>)> {
     let v = self.search_sub(0, lst);
-    match v {
-      Some((v1, v2, _)) => Some((v1, v2)),
-      None => None,
-    }
+    v.map(|(v1, v2, _)| (v1, v2))
   }
   fn search_sub(&self, index: usize, lst: &[T]) -> Option<(Vec<T>, Vec<T>, bool)> {
     match self {

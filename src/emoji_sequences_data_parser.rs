@@ -20,7 +20,9 @@ pub fn emoji_sequences_data_to_tree(tree_map: &mut HashMap<char, tree::V<char>>,
     match c {
       '\n' => {
         index += 1;
-        if cfg!(debug_assertions) {println!("loop{}", index);}
+        if cfg!(debug_assertions) {
+          println!("loop{}", index);
+        }
         // 2文字目が存在していた場合は、1文字目でhashmap内を検索して
         // 出てきたtreeに挿入
         if unicode_scalar_values_stack.get(1).is_some() {
