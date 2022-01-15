@@ -1,4 +1,5 @@
-//! Unicode提供の
+//! Unicode提供の以下のテキストデータを解析して結合絵文字の解析に使う木構造を生成する関数を提供する。
+//!
 //! - [ZWJを使用しないで結合する絵文字の組み合わせの一覧](https://www.unicode.org/Public/emoji/latest/emoji-sequences.txt)
 //! - [ZWJ結合する絵文字の組み合わせの一覧](https://www.unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt)
 //! を解析してcrate::tree::V構造を生成する。
