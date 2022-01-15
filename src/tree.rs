@@ -2,6 +2,8 @@
 //! リストを渡されたら、重複しているところをうまく重ねてデータを保持し、データ量を削減する
 //! また、検索の際の時間も削減する
 //! 二分探索木などとは違い、子要素を大量に持てるようにしている
+
+use std::vec;
 #[derive(Debug, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
 pub enum V<T> {
   Node(T, Vec<V<T>>),
@@ -24,10 +26,10 @@ where
     v
   }
 
-  pub fn insert(&mut self, lst: &[T]) {
+  pub fn insert(&self, lst: &[T]) -> Self {
     match self.insert_sub(lst, 0) {
-      None => *self = V::lst_to_v(&lst),
-      Some((v, _)) => *self = v,
+      None => V::lst_to_v(&lst),
+      Some((v, _)) => v,
     }
   }
   pub fn insert_sub(&self, lst: &[T], index: usize) -> Option<(Self, bool)> {
@@ -84,31 +86,42 @@ where
   /// もし存在するならばその存在する要素分をリストから取り除いたものを返す。
   /// 貪欲マッチする。つまり、複数のマッチする要素があったばあい、一番長いものを消費する
   pub fn search(&self, lst: &[T]) -> Option<(Vec<T>, Vec<T>)> {
-    self.search_sub(&mut vec![], 0, lst)
+    let v = self.search_sub(0, lst);
+    match v {
+      Some((v1, v2, _)) => Some((v1, v2)),
+      None => None,
+    }
   }
-  fn search_sub(&self, temp: &mut Vec<T>, index: usize, lst: &[T]) -> Option<(Vec<T>, Vec<T>)> {
+  fn search_sub(&self, index: usize, lst: &[T]) -> Option<(Vec<T>, Vec<T>, bool)> {
     match self {
-      V::End => {
-        // 終端なので、ここで返す
-        if lst.len() > index {
-          Some((
-            temp.to_vec(),
-            lst.iter().skip(index).cloned().collect::<Vec<_>>(),
-          ))
-        } else {
-          Some((temp.to_vec(), vec![]))
-        }
-      }
+      V::End => Some((
+        lst.iter().take(index).cloned().collect::<Vec<_>>(),
+        lst.iter().skip(index).cloned().collect::<Vec<_>>(),
+        true,
+      )),
       V::Node(t, children) => {
         if let Some(new_t) = lst.get(index) {
           if t == new_t {
-            temp.push(t.clone());
-            children
+            match children
               .iter()
-              .map(|v| v.search_sub(temp, index + 1, lst))
-              .filter(|v| v.is_some())
-              .max_by(|x, y| x.clone().unwrap().1.len().cmp(&y.clone().unwrap().1.len()))
+              .map(|v| v.search_sub(index + 1, lst))
+              .filter(|v| v.is_some()) //.collect::<Vec<_>>().len()
+              .max_by(|x, y| {
+                let x_len = x.clone().unwrap().0.len();
+                let y_len = y.clone().unwrap().0.len();
+                x_len.cmp(&y_len)
+              })
               .flatten()
+            {
+              None => None,
+              Some((take, other, is_discover)) => {
+                if is_discover {
+                  Some((take, other, true))
+                } else {
+                  None
+                }
+              }
+            }
           } else {
             None
           }

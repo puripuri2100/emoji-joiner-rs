@@ -7,7 +7,7 @@ use crate::tree;
 use std::collections::HashMap;
 
 #[allow(mutable_borrow_reservation_conflict)]
-pub fn emoji_sequences_data_to_tree(tree: &mut tree::V<char>, text: &str) {
+pub fn emoji_sequences_data_to_tree(tree_map: &mut HashMap<char, tree::V<char>>, text: &str) {
   let mut index = 0;
   // charを保存していく
   let mut unicode_scalar_values_stack: Vec<char> = Vec::new();
@@ -19,7 +19,7 @@ pub fn emoji_sequences_data_to_tree(tree: &mut tree::V<char>, text: &str) {
     match c {
       '\n' => {
         index += 1;
-        //println!("loop{}", index);
+        println!("loop{}", index);
         // 2文字目が存在していた場合は、1文字目でhashmap内を検索して
         // 出てきたtreeに挿入
         if unicode_scalar_values_stack.get(1).is_some() {
@@ -27,8 +27,14 @@ pub fn emoji_sequences_data_to_tree(tree: &mut tree::V<char>, text: &str) {
             let hex = u32::from_str_radix(&hex_stack.iter().collect::<String>(), 16).unwrap();
             unicode_scalar_values_stack.push(char::from_u32(hex).unwrap())
           }
-          unicode_scalar_values_stack.splice(0..1, [' ']);
-          //tree.insert(&unicode_scalar_values_stack);
+          //println!("unicode_scalar_values_stack: {:?}", unicode_scalar_values_stack);
+          let head = unicode_scalar_values_stack[0];
+          if let Some(tree) = tree_map.get(&head) {
+            let tree = tree.insert(&unicode_scalar_values_stack);
+            tree_map.insert(head, tree.clone());
+          } else {
+            tree_map.insert(head, tree::V::lst_to_v(&unicode_scalar_values_stack));
+          }
           unicode_scalar_values_stack = Vec::new();
           hex_stack = Vec::new();
         }
