@@ -28,7 +28,6 @@ pub fn emoji_sequences_data_to_tree(tree_map: &mut HashMap<char, tree::V<char>>,
             let hex = u32::from_str_radix(&hex_stack.iter().collect::<String>(), 16).unwrap();
             unicode_scalar_values_stack.push(char::from_u32(hex).unwrap())
           }
-          //println!("unicode_scalar_values_stack: {:?}", unicode_scalar_values_stack);
           let head = unicode_scalar_values_stack[0];
           if let Some(tree) = tree_map.get(&head) {
             let tree = tree.insert(&unicode_scalar_values_stack);

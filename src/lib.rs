@@ -10,12 +10,10 @@ pub fn make_emoji_data_14_0() -> HashMap<char, tree::V<char>> {
     &mut tree_map,
     data_text::UNICODE_EMOJI_SEQUENCES_14_0,
   );
-  //println!("end");
   emoji_sequences_data_parser::emoji_sequences_data_to_tree(
     &mut tree_map,
     data_text::UNICODE_EMOJI_ZWJ_SEQUENCES_14_0,
   );
-  //println!("end");
   tree_map
 }
 
