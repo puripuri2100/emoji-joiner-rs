@@ -57,23 +57,11 @@ fn test_emoji_joiner() {
   );
   assert_eq!(
     3,
-    emoji_joiner_with_emoji_data(
-      &emoji_data,
-      &vec!['\u{2714}', '\u{FE0E}', '\u{FE0F}']
-        .iter()
-        .collect::<String>()
-    )
-    .len()
+    emoji_joiner_with_emoji_data(&emoji_data, "\u{2714}\u{FE0E}\u{FE0F}").len()
   );
   assert_eq!(
     1,
-    emoji_joiner_with_emoji_data(
-      &emoji_data,
-      &vec!['\u{1F9D1}', '\u{1F3FC}', '\u{200D}', '\u{2695}', '\u{FE0F}']
-        .iter()
-        .collect::<String>()
-    )
-    .len()
+    emoji_joiner_with_emoji_data(&emoji_data, "\u{1F9D1}\u{1F3FC}\u{200D}\u{2695}\u{FE0F}").len()
   );
   assert_eq!(
     vec![
@@ -82,12 +70,7 @@ fn test_emoji_joiner() {
       vec!['\u{2695}'],
       vec!['\u{FE0E}']
     ],
-    emoji_joiner_with_emoji_data(
-      &emoji_data,
-      &vec!['\u{1F9D1}', '\u{1F3FC}', '\u{200D}', '\u{2695}', '\u{FE0E}']
-        .iter()
-        .collect::<String>()
-    )
+    emoji_joiner_with_emoji_data(&emoji_data, "\u{1F9D1}\u{1F3FC}\u{200D}\u{2695}\u{FE0E}")
   );
   assert_eq!(
     vec![
@@ -114,26 +97,7 @@ fn test_emoji_joiner() {
     ],
     emoji_joiner_with_emoji_data(
       &emoji_data,
-      &vec![
-        '\u{1F469}',
-        '\u{1F3FB}',
-        '\u{200D}',
-        '\u{2764}',
-        '\u{FE0F}',
-        '\u{200D}',
-        '\u{1F468}',
-        '\u{1F3FB}',
-        '\u{1F469}',
-        '\u{1F3FB}',
-        '\u{200D}',
-        '\u{2764}',
-        '\u{FE0F}',
-        '\u{200D}',
-        '\u{1F468}',
-        '\u{1F3FB}'
-      ]
-      .iter()
-      .collect::<String>()
+      "\u{1F469}\u{1F3FB}\u{200D}\u{2764}\u{FE0F}\u{200D}\u{1F468}\u{1F3FB}\u{1F469}\u{1F3FB}\u{200D}\u{2764}\u{FE0F}\u{200D}\u{1F468}\u{1F3FB}"
     )
   );
   assert_eq!(
@@ -157,26 +121,7 @@ fn test_emoji_joiner() {
     ],
     emoji_joiner_with_emoji_data(
       &emoji_data,
-      &vec![
-        '\u{1F469}',
-        '\u{1F3FB}',
-        '\u{200D}',
-        '\u{2764}',
-        '\u{FE0F}',
-        '\u{200D}',
-        '\u{1F421}',
-        '\u{1F3FB}',
-        '\u{1F469}',
-        '\u{1F3FB}',
-        '\u{200D}',
-        '\u{2764}',
-        '\u{FE0F}',
-        '\u{200D}',
-        '\u{1F468}',
-        '\u{1F3FB}'
-      ]
-      .iter()
-      .collect::<String>()
+      "\u{1F469}\u{1F3FB}\u{200D}\u{2764}\u{FE0F}\u{200D}\u{0023}\u{1F3FB}\u{1F469}\u{1F3FB}\u{200D}\u{2764}\u{FE0F}\u{200D}\u{1F468}\u{1F3FB}"
     )
   );
 }
